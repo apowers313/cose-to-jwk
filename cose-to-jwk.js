@@ -1,8 +1,43 @@
+var cbor = require("cbor");
 module.exports = coseToJwk;
 
-function coseToJwk(coseMap) {
-    console.log("PARSING COSE");
-    console.log("coseMap", coseMap);
+function coseToJwk(cose) {
+    if (typeof cose !== "object") {
+        throw new TypeError("'cose' argument must be an object, probably an Buffer conatining valid COSE");
+    }
+
+    // convert Uint8Array, etc. to ArrayBuffer
+    if (cose.buffer instanceof ArrayBuffer && !(cose instanceof Buffer)) {
+        cose = cose.buffer;
+    }
+
+    if(Array.isArray(cose)) {
+        cose = Buffer.from(cose);
+    }
+
+    // convert ArrayBuffer to Buffer
+    if (cose instanceof ArrayBuffer) {
+        cose = Buffer.from(new Uint8Array(cose));
+    }
+
+    if (!(cose instanceof Buffer)) {
+        throw new TypeError("could not convert 'cose' argument to a Buffer");
+    }
+
+    if(cose.length < 3) {
+        throw new RangeError ("COSE buffer was too short: " + cose.length);
+    }
+
+    var parsedCose;
+    try {
+        parsedCose = cbor.decodeAllSync(Buffer.from(cose));
+    } catch (err) {
+        throw new Error("couldn't parse authenticator.authData.attestationData CBOR: " + err);
+    }
+    if (!Array.isArray(parsedCose) || !(parsedCose[0] instanceof Map)) {
+        throw new Error("invalid parsing of authenticator.authData.attestationData CBOR");
+    }
+    var coseMap = parsedCose[0];
 
     // main COSE labels
     // defined here: https://tools.ietf.org/html/rfc8152#section-7.1
@@ -10,7 +45,7 @@ function coseToJwk(coseMap) {
         "1": {
             name: "kty",
             values: {
-                "2": "EC2",
+                "2": "EC",
                 "3": "RSA"
             }
         },
@@ -41,7 +76,7 @@ function coseToJwk(coseMap) {
     const keyParamList = {
         // ECDSA key parameters
         // defined here: https://tools.ietf.org/html/rfc8152#section-13.1.1
-        "EC2": {
+        "EC": {
             "-1": {
                 name: "crv",
                 values: {
@@ -142,7 +177,6 @@ function coseToJwk(coseMap) {
     }
 
     var keyParams = keyParamList[retKey.kty];
-    console.log("keyParams", keyParams);
 
     // parse key-specific parameters
     for (let kv of extraMap) {
@@ -152,9 +186,7 @@ function coseToJwk(coseMap) {
         if (!keyParams[key]) {
             throw new Error("unknown COSE key label: " + retKey.kty + " " + key);
         }
-        console.log("key", key);
         let name = keyParams[key].name;
-        console.log("name", name);
 
         if (keyParams[key].values) {
             value = keyParams[key].values[value.toString()];
@@ -163,6 +195,5 @@ function coseToJwk(coseMap) {
         retKey[name] = value;
     }
 
-    console.log("returning", retKey);
     return retKey;
 }

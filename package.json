@@ -35,5 +35,7 @@
     "mockery": "^2.0.0",
     "sinon": "^1.17.6"
   },
-  "dependencies": {}
+  "dependencies": {
+    "cbor": "^4.0.0"
+  }
 }
