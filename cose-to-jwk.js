@@ -11,7 +11,7 @@ function coseToJwk(cose) {
         cose = cose.buffer;
     }
 
-    if(Array.isArray(cose)) {
+    if (Array.isArray(cose)) {
         cose = Buffer.from(cose);
     }
 
@@ -24,8 +24,8 @@ function coseToJwk(cose) {
         throw new TypeError("could not convert 'cose' argument to a Buffer");
     }
 
-    if(cose.length < 3) {
-        throw new RangeError ("COSE buffer was too short: " + cose.length);
+    if (cose.length < 3) {
+        throw new RangeError("COSE buffer was too short: " + cose.length);
     }
 
     var parsedCose;
@@ -190,6 +190,10 @@ function coseToJwk(cose) {
 
         if (keyParams[key].values) {
             value = keyParams[key].values[value.toString()];
+        }
+
+        if (value instanceof Buffer) {
+            value = value.toString("base64");
         }
 
         retKey[name] = value;

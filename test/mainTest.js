@@ -19,8 +19,8 @@ const yArray = [
     0xf1, 0x09, 0x88, 0x88, 0xf3, 0x13, 0x55, 0x05, 0x15, 0x92, 0x11, 0x84, 0xc8, 0x6a, 0xca, 0xc3
 ];
 
-const xBuf = Buffer.from(xArray);
-const yBuf = Buffer.from(yArray);
+const expectedX = Buffer.from(xArray);
+const expectedY = Buffer.from(yArray);
 
 const coseBuffer = Buffer.from(coseArray);
 const coseUint8Array = new Uint8Array(coseBuffer);
@@ -50,8 +50,8 @@ describe("cose-to-jwk", function() {
         assert.instanceOf(ret, Object);
         assert.strictEqual(ret.kty, "EC");
         assert.strictEqual(ret.crv, "P-256");
-        assert.instanceOf(ret.x, Buffer);
-        assert.instanceOf(ret.y, Buffer);
+        assert.strictEqual(ret.x, "uxHN3W6ehp0VWXKaMNie1J82MVJCFZYScau74o17cx8=");
+        assert.strictEqual(ret.y, "29Y5Ey4u5WGWW4MFMKagJPEJiIjzE1UFFZIRhMhqysM=");
     });
 
     it("can convert Uint8Array", function() {
@@ -59,8 +59,8 @@ describe("cose-to-jwk", function() {
         assert.instanceOf(ret, Object);
         assert.strictEqual(ret.kty, "EC");
         assert.strictEqual(ret.crv, "P-256");
-        assert.instanceOf(ret.x, Buffer);
-        assert.instanceOf(ret.y, Buffer);
+        assert.strictEqual(ret.x, "uxHN3W6ehp0VWXKaMNie1J82MVJCFZYScau74o17cx8=");
+        assert.strictEqual(ret.y, "29Y5Ey4u5WGWW4MFMKagJPEJiIjzE1UFFZIRhMhqysM=");
     });
 
     it.skip("can convert Uint16Array", function() {
@@ -68,8 +68,8 @@ describe("cose-to-jwk", function() {
         assert.instanceOf(ret, Object);
         assert.strictEqual(ret.kty, "EC");
         assert.strictEqual(ret.crv, "P-256");
-        assert.instanceOf(ret.x, Buffer);
-        assert.instanceOf(ret.y, Buffer);
+        assert.strictEqual(ret.x, "uxHN3W6ehp0VWXKaMNie1J82MVJCFZYScau74o17cx8=");
+        assert.strictEqual(ret.y, "29Y5Ey4u5WGWW4MFMKagJPEJiIjzE1UFFZIRhMhqysM=");
     });
 
     it("can convert Array", function() {
@@ -77,8 +77,8 @@ describe("cose-to-jwk", function() {
         assert.instanceOf(ret, Object);
         assert.strictEqual(ret.kty, "EC");
         assert.strictEqual(ret.crv, "P-256");
-        assert.instanceOf(ret.x, Buffer);
-        assert.instanceOf(ret.y, Buffer);
+        assert.strictEqual(ret.x, "uxHN3W6ehp0VWXKaMNie1J82MVJCFZYScau74o17cx8=");
+        assert.strictEqual(ret.y, "29Y5Ey4u5WGWW4MFMKagJPEJiIjzE1UFFZIRhMhqysM=");
     });
 
     it("ECDSA", function() {
@@ -86,10 +86,13 @@ describe("cose-to-jwk", function() {
         assert.instanceOf(ret, Object);
         assert.strictEqual(ret.kty, "EC");
         assert.strictEqual(ret.crv, "P-256");
-        assert.instanceOf(ret.x, Buffer);
-        assert.instanceOf(ret.y, Buffer);
+        assert.strictEqual(ret.x, "uxHN3W6ehp0VWXKaMNie1J82MVJCFZYScau74o17cx8=");
+        assert.strictEqual(ret.y, "29Y5Ey4u5WGWW4MFMKagJPEJiIjzE1UFFZIRhMhqysM=");
 
-        assert(bufComp(ret.x, xBuf), "ECDSA x bytes are correct");
-        assert(bufComp(ret.y, yBuf), "ECDSA y bytes are correct");
+        var x = Buffer.from(ret.x, "base64");
+        var y = Buffer.from(ret.y, "base64");
+
+        assert(bufComp(x, expectedX), "ECDSA x bytes are correct");
+        assert(bufComp(y, expectedY), "ECDSA y bytes are correct");
     });
 });
