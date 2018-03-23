@@ -1,3 +1,5 @@
+"use strict";
+
 const coseToJwk = require("../cose-to-jwk");
 const assert = require("chai").assert;
 

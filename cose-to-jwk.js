@@ -1,3 +1,5 @@
+"use strict";
+
 var cbor = require("cbor");
 module.exports = coseToJwk;
 

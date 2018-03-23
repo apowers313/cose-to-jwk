@@ -1,6 +1,6 @@
 {
   "name": "cose-to-jwk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "COSE (RFC 8152) to JWK (RFC 7517) converter for node.js. Created for WebAuthn.",
   "main": "cose-to-jwk.js",
   "scripts": {
