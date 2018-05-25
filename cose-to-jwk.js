@@ -61,7 +61,11 @@ function coseToJwk(cose) {
                 "-7": "ECDSA_w_SHA256",
                 "-8": "EdDSA",
                 "-35": "ECDSA_w_SHA384",
-                "-36": "ECDSA_w_SHA512"
+                "-36": "ECDSA_w_SHA512",
+                "-257": "RSASSA-PKCS1-v1_5_w_SHA-256",
+                "-258": "RSASSA-PKCS1-v1_5_w_SHA-384",
+                "-259": "RSASSA-PKCS1-v1_5_w_SHA-512",
+                "-65535": "RSASSA-PKCS1-v1_5_w_SHA-1"
             }
         },
         "4": {
