@@ -1,6 +1,8 @@
 "use strict";
 
 const coseToJwk = require("../cose-to-jwk");
+const algToStr = coseToJwk.algToStr;
+const algToHashStr = coseToJwk.algToHashStr;
 const assert = require("chai").assert;
 
 const coseArray = [
@@ -67,6 +69,8 @@ function bufComp(a, b) {
 
 
 describe("cose-to-jwk", function() {
+    it("error checking");
+
     it("can convert ArrayBuffer", function() {
         var ret = coseToJwk(coseArrayBuffer);
         assert.instanceOf(ret, Object);
@@ -135,7 +139,7 @@ describe("cose-to-jwk", function() {
         assert(bufComp(y, expectedY2), "ECDSA y bytes are correct");
     });
 
-    it("can convert RSASSA PKCS1 w/ SHA-256", function() {
+    it("can convert RSASSA PKCS1 w/ SHA256", function() {
         var rsaSsaPkcs1 = new Uint8Array([
             0xA4, 0x01, 0x03, 0x03, 0x39, 0x01, 0x00, 0x20, 0x59, 0x01, 0x00, 0xC5, 0xDA, 0x6F, 0x4D, 0x93,
             0x57, 0xBD, 0xE2, 0x02, 0xF5, 0xC5, 0x58, 0xCD, 0x0A, 0x31, 0x56, 0xD2, 0x54, 0xF2, 0xE0, 0xAD,
@@ -158,8 +162,136 @@ describe("cose-to-jwk", function() {
         var ret = coseToJwk(rsaSsaPkcs1);
         assert.instanceOf(ret, Object);
         assert.strictEqual(ret.kty, "RSA");
-        assert.strictEqual(ret.alg, "RSASSA-PKCS1-v1_5_w_SHA-256");
+        assert.strictEqual(ret.alg, "RSASSA-PKCS1-v1_5_w_SHA256");
         assert.strictEqual(ret.n, "xdpvTZNXveIC9cVYzQoxVtJU8uCtmrV5MfmCa3R94axPKdYHCHTc5XkQ4ZhESZ2OQkcDObFw0CK1AauI6cL07TAuRxnHDevohCQD7ZvfwicwphobcPYWxfG3AMrPeEYTfcSy1Gmo4VqrT62GVwhAItKPRNkHUyMSa3AHyYGTn99yTK9PvkdQQEMaTqBkQwvLLPrX0Fvbn2S1sOCVLs+GeSc9bG36gWAfFFAzFqE9B4LDGj5r3e09e8Rrwfqb7w3/g7ferxRrWCxGRIIaPGLtuqa+QivwTkPtr1/TeDCGFT1zYaIDBhpimKsm4TN8ocntBnQaWQVHeYjnIDBOrhidfw==");
         assert.strictEqual(ret.e, "AQAB");
+    });
+});
+
+describe("algToStr", function() {
+    it("error checking");
+
+    it("ECDSA_w_SHA256", function() {
+        var ret = algToStr(-7);
+        assert.strictEqual(ret, "ECDSA_w_SHA256");
+    });
+
+    it("EdDSA", function() {
+        var ret = algToStr(-8);
+        assert.strictEqual(ret, "EdDSA");
+    });
+
+    it("ECDSA_w_SHA384", function() {
+        var ret = algToStr(-35);
+        assert.strictEqual(ret, "ECDSA_w_SHA384");
+    });
+
+    it("ECDSA_w_SHA512", function() {
+        var ret = algToStr(-36);
+        assert.strictEqual(ret, "ECDSA_w_SHA512");
+    });
+
+    it("RSASSA-PKCS1-v1_5_w_SHA256", function() {
+        var ret = algToStr(-257);
+        assert.strictEqual(ret, "RSASSA-PKCS1-v1_5_w_SHA256");
+    });
+
+    it("RSASSA-PKCS1-v1_5_w_SHA384", function() {
+        var ret = algToStr(-258);
+        assert.strictEqual(ret, "RSASSA-PKCS1-v1_5_w_SHA384");
+    });
+
+    it("RSASSA-PKCS1-v1_5_w_SHA512", function() {
+        var ret = algToStr(-259);
+        assert.strictEqual(ret, "RSASSA-PKCS1-v1_5_w_SHA512");
+    });
+
+    it("RSASSA-PKCS1-v1_5_w_SHA1", function() {
+        var ret = algToStr(-65535);
+        assert.strictEqual(ret, "RSASSA-PKCS1-v1_5_w_SHA1");
+    });
+});
+
+describe("algToHashStr", function() {
+    it("error checking");
+
+    it("ECDSA_w_SHA256", function() {
+        var ret = algToHashStr("ECDSA_w_SHA256");
+        assert.strictEqual(ret, "SHA256");
+    });
+
+    it("ECDSA_w_SHA256 (-7)", function() {
+        var ret = algToHashStr(-7);
+        assert.strictEqual(ret, "SHA256");
+    });
+
+    it.skip("EdDSA", function() {
+        var ret = algToHashStr(-8);
+        assert.strictEqual(ret, "EdDSA");
+    });
+
+    it.skip("EdDSA (-8)", function() {
+        var ret = algToHashStr(-8);
+        assert.strictEqual(ret, "EdDSA");
+    });
+
+    it("ECDSA_w_SHA384", function() {
+        var ret = algToHashStr("ECDSA_w_SHA384");
+        assert.strictEqual(ret, "SHA384");
+    });
+
+    it("ECDSA_w_SHA384 (-35)", function() {
+        var ret = algToHashStr(-35);
+        assert.strictEqual(ret, "SHA384");
+    });
+
+    it("ECDSA_w_SHA512", function() {
+        var ret = algToHashStr("ECDSA_w_SHA512");
+        assert.strictEqual(ret, "SHA512");
+    });
+
+    it("ECDSA_w_SHA512 (-36)", function() {
+        var ret = algToHashStr(-36);
+        assert.strictEqual(ret, "SHA512");
+    });
+
+    it("RSASSA-PKCS1-v1_5_w_SHA256", function() {
+        var ret = algToHashStr("RSASSA-PKCS1-v1_5_w_SHA256");
+        assert.strictEqual(ret, "SHA256");
+    });
+
+    it("RSASSA-PKCS1-v1_5_w_SHA256 (-257)", function() {
+        var ret = algToHashStr(-257);
+        assert.strictEqual(ret, "SHA256");
+    });
+
+    it("RSASSA-PKCS1-v1_5_w_SHA384", function() {
+        var ret = algToHashStr("RSASSA-PKCS1-v1_5_w_SHA384");
+        assert.strictEqual(ret, "SHA384");
+    });
+
+    it("RSASSA-PKCS1-v1_5_w_SHA384 (-258)", function() {
+        var ret = algToHashStr(-258);
+        assert.strictEqual(ret, "SHA384");
+    });
+
+    it("RSASSA-PKCS1-v1_5_w_SHA512", function() {
+        var ret = algToHashStr("RSASSA-PKCS1-v1_5_w_SHA512");
+        assert.strictEqual(ret, "SHA512");
+    });
+
+    it("RSASSA-PKCS1-v1_5_w_SHA512 (-259)", function() {
+        var ret = algToHashStr(-259);
+        assert.strictEqual(ret, "SHA512");
+    });
+
+    it("RSASSA-PKCS1-v1_5_w_SHA1", function() {
+        var ret = algToHashStr("RSASSA-PKCS1-v1_5_w_SHA1");
+        assert.strictEqual(ret, "SHA1");
+    });
+
+    it("RSASSA-PKCS1-v1_5_w_SHA1 (-65535)", function() {
+        var ret = algToHashStr(-65535);
+        assert.strictEqual(ret, "SHA1");
     });
 });
