@@ -1,6 +1,6 @@
 ## cose-to-jwk
 
-[![Build Status](https://travis-ci.org/apowers313/cose-to-jwk.svg?branch=master)](https://travis-ci.org/apowers313/cose-to-jwk)
+[![Build Status](https://travis-ci.org/apowers313/cose-to-jwk.svg?branch=master)](https://travis-ci.org/apowers313/cose-to-jwk) [![Coverage Status](https://coveralls.io/repos/github/apowers313/cose-to-jwk/badge.svg?branch=master)](https://coveralls.io/github/apowers313/cose-to-jwk?branch=master)
 
 This was created to convert [CBOR Object Signing and Encryption (COSE)](https://tools.ietf.org/html/rfc8152) to [JSON Web Key (JWK)](https://tools.ietf.org/html/rfc7517). I specifically needed this for [WebAuthn](https://www.w3.org/TR/webauthn/) and I'm using it with [jwk-to-pem](https://www.npmjs.com/package/jwk-to-pem) to create PEM strings that work with [Node.js's Crypto library](https://nodejs.org/api/crypto.html).
 
